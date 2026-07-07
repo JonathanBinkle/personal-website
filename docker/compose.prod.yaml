@@ -44,7 +44,7 @@ services:
       args:
         APP_ROOT: ${APP_ROOT}
         WWW_ROOT: ${WWW_ROOT}
-        PYTHON_VERSION: ${PYTHON_VERSION}
+        PYTHON_VERSION_ENV: ${PYTHON_VERSION_ENV}
     container_name: portfolio-django-prod
     volumes:
       - static_volume:${APP_ROOT}/staticfiles

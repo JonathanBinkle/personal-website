@@ -1,24 +1,24 @@
 # https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx
 # https://testdriven.io/blog/docker-best-practices
 
-ARG PYTHON_VERSION
+ARG PYTHON_VERSION_ENV
 
 ###############
 # First stage #
 ###############
-FROM python:${PYTHON_VERSION} AS builder
-ARG PYTHON_VERSION
+FROM python:${PYTHON_VERSION_ENV} AS builder
+ARG PYTHON_VERSION_ENV
 COPY requirements.txt ./
 RUN pip install --upgrade pip wheel gunicorn -r requirements.txt
 
 ###############
 # Final stage #
 ###############
-FROM python:${PYTHON_VERSION}-slim
-ARG PYTHON_VERSION
+FROM python:${PYTHON_VERSION_ENV}-slim
+ARG PYTHON_VERSION_ENV
 
-COPY --from=builder /usr/local/lib/python3.13/site-packages \
-	/usr/local/lib/python3.13/site-packages
+COPY --from=builder /usr/local/lib/python${PYTHON_VERSION_ENV}/site-packages \
+	/usr/local/lib/python${PYTHON_VERSION_ENV}/site-packages
 RUN apt-get update \
 	# For mysqlclient to work:
 	&& apt-get install --no-install-recommends -y libmariadb3 \
@@ -31,7 +31,7 @@ RUN apt-get update \
 # https://docs.python.org/3/using/cmdline.html#environment-variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH=/usr/local/lib/python3.13/site-packages
+ENV PYTHONPATH=/usr/local/lib/python${PYTHON_VERSION_ENV}/site-packages
 
 ARG APP_ROOT
 ARG WWW_ROOT
