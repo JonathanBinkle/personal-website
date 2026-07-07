@@ -4,6 +4,8 @@ docker-prune:
 	@docker system prune -a
 
 docker-pull:
+	@if [ -e .env ]; then rm .env; fi
+	@ln -s .env.prod .env
 	@docker compose -f compose.prod.yaml build --pull
 
 setup-dev: .env.dev
