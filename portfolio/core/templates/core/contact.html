@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="mb-5">Contact</h1>
+
+<b>Email</b>
+<p>
+<a href="mailto:jonathan_binkle_blog@proton.me">jonathan_binkle_blog@proton.me</a>
+<ul>
+    <li>
+        <a href="{% static '/pgp.asc' %}">PGP key</a>
+        (<code>a422695b1fb1b36208f50a64d1bc6de5fedd98a8</code>)
+    </li>
+</ul>
+</p>
+
+<br>
+
+<b>LinkedIn</b>
+<p>
+    <a href="https://linkedin.com/in/jonathan-binkle">jonathan-binkle</a>
+</p>
+
+{% endblock %}

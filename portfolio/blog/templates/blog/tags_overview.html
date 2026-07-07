@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<h1 class="mb-5">Tags</h1>
+
+{% if not tags %}
+    <div class="alert alert-warning" role="alert">
+        Sorry, but there are no tags yet...
+    </div>
+{% endif %}
+
+{% for tag in tags %}
+    <a  href="{% url 'blog:posts_by_tag' tag.id %}"
+        type="button"
+        class="mt-1 btn btn-sm btn-light">
+            {{ tag.name }}
+            <sup class="text-muted p-1">
+                {% if tag.count == 0 %} [UNREFERENCED] {% else %} {{ tag.count }} {% endif %}
+                {% if tag.draft_only %} [DRAFT-ONLY] {% endif %}
+            </sup>
+    </a>
+{% endfor %}
+
+{% endblock %}

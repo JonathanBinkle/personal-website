@@ -1,0 +1,8 @@
+FROM mysql:8.4
+
+RUN mkdir -p /var/log/mysql && chown -R mysql:mysql /var/log/mysql
+
+COPY --chown=mysql:mysql --chmod=400 my.cnf /etc/mysql/my.cnf
+
+USER mysql
+

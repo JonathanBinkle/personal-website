@@ -1,0 +1,94 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="mb-5">Posts</h1>
+
+<div class="row mb-5">
+    <div class="col-lg-5 offset-lg-7">
+        <form class="d-flex" method="post">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search"
+                    placeholder="Search in posts ..."
+                    aria-label="Search"
+                    name="search_field">
+            <button class="btn btn-outline-success" type="submit">
+                Search
+            </button>
+        </form>
+    </div>
+</div>
+
+{% if not posts and invalid_tag or no_search_matches %}
+    <div class="alert alert-warning" role="alert">
+        Sorry, but there are no matching posts...
+    </div>
+{% elif not posts or only_draft_posts and not request.user.is_superuser %}
+    <div class="alert alert-warning" role="alert">
+        Sorry, but there are no posts yet...
+    </div>
+{% endif %}
+
+<div id="post-list">
+{% for post in posts %}
+    {% if not post.draft or post.draft and request.user.is_superuser %}
+    <div id="post-card" class="card mb-5">
+        <div class="card-body">
+            <div class="row">
+                <h5 class="card-title col-lg">
+                    {% if post.draft %}
+                        <b>[DRAFT]</b>
+                    {% endif %}
+                    <a href="{% url 'blog:post' post.id %}">
+                        {{ post.title | md2html | safe }}
+                    </a>
+                </h5>
+                <small class="col-lg-auto text-muted">
+                    <img src="{% static '/bootstrap_icons/clock.svg' %}">
+                    {{ post.reading_time }} minute{{ post.reading_time|pluralize }}
+                </small>
+                <small class="col-lg-auto text-muted">
+                    <img src="{% static '/bootstrap_icons/calendar.svg' %}">
+                    <span
+                        class="date"
+                        data-utc="{{ post.datetime_published|date:'c' }}">
+                        {{ post.datetime_published|date:"M d, Y"}}
+                    </span>
+                </small>
+            </div>
+            <div class="card-subtitle mb-3 text-body-secondary mt-1">
+                {% for tag in post.tags.all %}
+                    <a  href="{% url 'blog:posts_by_tag' tag.id %}"
+                        type="button"
+                        class="mt-1 btn btn-sm btn-light tags">
+                            {{ tag.name }}
+                    </a>
+                {% endfor %}
+            </div>
+            <p class="card-text">
+                {{ post.teaser | md2html | safe }}
+            </p>
+            <a href="{% url 'blog:post' post.id %}" class="stretched-link"></a>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script nonce="{{ csp_nonce }}">
+        // Convert date fields from UTC to user's timezone (iff JS enabled).
+        $(".date").each(function(idx, element) {
+            let utc_dt = new Date(element.getAttribute("data-utc"));
+            element.textContent = utc_dt.toLocaleString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            });
+        });
+    </script>
+{% endblock %}

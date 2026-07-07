@@ -1,0 +1,19 @@
+FROM nginx:1.31.2
+
+ARG APP_ROOT
+ARG NGINX_VOL_GID_HOST
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends adduser \
+    && rm /etc/nginx/conf.d/default.conf /etc/nginx/nginx.conf \
+    && touch /var/run/nginx.pid \
+    && mkdir -p ${APP_ROOT}/mediafiles/blog_images ${APP_ROOT}/staticfiles \
+       /etc/nginx/error_pages \
+    # NOTE: make sure to 'chmod x4x' all files nginx/vol/*
+    && addgroup --system --gid ${NGINX_VOL_GID_HOST} host \
+    && usermod -aG host nginx \
+    && ln -s /etc/nginx/vol/nginx.conf /etc/nginx/nginx.conf \
+    && chown -R nginx:nginx /etc/nginx /var/cache/nginx /var/run/nginx.pid \
+       ${APP_ROOT}/mediafiles ${APP_ROOT}/staticfiles
+
+USER nginx

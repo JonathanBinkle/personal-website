@@ -1,0 +1,90 @@
+body {
+    font-family: monospace;
+}
+
+#load-background {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    display: block;
+    background-color: #ffffff;
+    z-index: 99;
+    text-align: center;
+    align-items: center;
+}
+
+#load-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+#row-post-title {
+    /* If title is one really long word: break it up */
+    overflow-wrap: break-word;
+}
+
+#toc li {
+    list-style: none;
+}
+
+#toc a {
+    color: grey;
+    font-size: small;
+    text-decoration: none;
+}
+
+#toc a.active {
+    color: #0d6efd;
+}
+
+#toc a:hover {
+    color: #0d6efd;
+}
+
+#post-card:hover {
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tags {
+    /* Make button clickable despite link streching */
+    z-index: 2;
+    position: relative;
+}
+
+.codehilite {
+    border-radius: 5px;
+    margin-bottom: 1em;
+}
+
+.codehilite pre {
+    padding: 1em;
+}
+
+code:not(.codehilite code) {
+    font-size: 1em;
+}
+
+.vertical-hr {
+    transform: rotate(90deg);
+}
+
+#post-content h1,
+#post-content h2,
+#post-content h3,
+#post-content h4,
+#post-content h5,
+#post-content h6 {
+    margin-top: 1em;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    text-decoration: none;
+    color: black;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+    color: #0d6efd;
+}

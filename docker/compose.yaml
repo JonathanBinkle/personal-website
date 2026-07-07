@@ -1,0 +1,42 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: portfolio-mysql
+    expose:
+      - ${MYSQL_PORT}
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: True
+    volumes:
+      - ./mysql/mysql/my.cnf:/etc/mysql/my.cnf:ro
+      # https://stackoverflow.com/questions/76734979/
+      - ./mysql/mysql_init_scripts/dev/:/docker-entrypoint-initdb.d/:ro
+    healthcheck:
+      # https://stackoverflow.com/questions/42567475/
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "${MYSQL_USER}", "--password=${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 10s
+      retries: 6
+  
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_ROOT: ${APP_ROOT}
+        WWW_ROOT: ${WWW_ROOT}
+        # Don't use PYTHON_VERSION (set by Docker image itself)
+        PYTHON_VERSION_ENV: ${PYTHON_VERSION_ENV}
+    container_name: portfolio-django
+    volumes:
+      # Volume to live-reload Django's content
+      # Don't mark `:ro`: Django must write migrations (`makemigrations`)
+      - ${WWW_ROOT_HOST}:${WWW_ROOT}
+    ports:
+      - ${DJANGO_PORT}:${DJANGO_PORT}
+    env_file: .env
+    depends_on:
+      mysql:
+        condition: service_healthy

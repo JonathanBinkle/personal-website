@@ -1,0 +1,44 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+
+<h1 class="text-center mb-5">Privacy Policy</h1>
+
+<p>
+This site respects your privacy.
+</p>
+
+<br>
+
+<b>Cookies</b>
+<p>
+Two technically-required cookies are used:
+</p>
+<ul>
+    <li><code>csrftoken</code>: CSRF protection.</li>
+    <li><code>sessionid</code>: session handling, set only for site admins.</li>
+</ul>
+<p>
+No tracking cookies.
+</p>
+
+<br>
+
+<b>Logging</b>
+<p>
+Technical logs are kept for troubleshooting (and curiosity). No IP addresses are
+retained. What's logged per request:
+</p>
+<ul>
+    <li>Timestamp, request line (method, path, protocol), response status and size</li>
+    <li>Browser user-agent</li>
+    <li>NGINX error logs, IP stripped</li>
+</ul>
+<p>
+Logs are deleted after at most two weeks.
+</p>
+
+<br>
+Questions? <a href="{% url 'core:contact' %}">Contact me</a>.
+
+{% endblock %}

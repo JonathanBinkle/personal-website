@@ -1,0 +1,12 @@
+# Ignore TLS files but not the folder
+**/tls/*
+!**/tls/.gitkeep
+
+# Python
+__pycache__/
+venv/
+
+# Backup archives
+backup-*.tar.gz
+
+.env*

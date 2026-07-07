@@ -1,0 +1,48 @@
+# https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx
+# https://testdriven.io/blog/docker-best-practices
+
+ARG PYTHON_VERSION
+
+###############
+# First stage #
+###############
+FROM python:${PYTHON_VERSION} AS builder
+ARG PYTHON_VERSION
+COPY requirements.txt ./
+RUN pip install --upgrade pip wheel gunicorn -r requirements.txt
+
+###############
+# Final stage #
+###############
+FROM python:${PYTHON_VERSION}-slim
+ARG PYTHON_VERSION
+
+COPY --from=builder /usr/local/lib/python3.13/site-packages \
+	/usr/local/lib/python3.13/site-packages
+RUN apt-get update \
+	# For mysqlclient to work:
+	&& apt-get install --no-install-recommends -y libmariadb3 \
+    # Install 'ps/pgrep/...' commands to easily find gunicorn PID
+    && apt-get install --no-install-recommends -y procps \
+    && apt-get autoremove --purge -y \
+	# Create non-root user. Use same UID as NGINX's user (shared volume).
+	&& addgroup --system django && adduser --system --uid 101 --group django
+
+# https://docs.python.org/3/using/cmdline.html#environment-variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONPATH=/usr/local/lib/python3.13/site-packages
+
+ARG APP_ROOT
+ARG WWW_ROOT
+
+COPY --chmod=500 --chown=django:django ./entrypoint.prod.sh ${APP_ROOT}/
+COPY --chmod=400 --chown=django:django ./gunicorn.conf.py ${APP_ROOT}/
+
+RUN mkdir -p ${APP_ROOT}/staticfiles ${APP_ROOT}/mediafiles/blog_images \
+             ${WWW_ROOT} \
+	&& chown -R django:django ${APP_ROOT}
+
+USER django
+
+ENTRYPOINT ${APP_ROOT}/entrypoint.prod.sh

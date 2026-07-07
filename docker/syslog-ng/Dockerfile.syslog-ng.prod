@@ -1,0 +1,19 @@
+# https://hub.docker.com/r/balabit/syslog-ng
+# https://www.syslog-ng.com/community/b/blog/posts/central-log-server-docker
+# https://www.syslog-ng.com/docs/logging-in-docker-using-syslog-ng-white-paper-25911.pdf
+# https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.38/administration-guide
+
+FROM balabit/syslog-ng:4.11.0
+
+# Use g/uid 999 to be able to read /var/log/mysql (the mysql user has g/uid 999)
+RUN groupadd --system --gid 999 user \
+    && useradd --system --gid user user \
+    && apt-get update && apt-get install --no-install-recommends -y logrotate \
+    && apt-get autoremove --purge -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /etc/syslog-ng/ /var/log/mysql /var/log/portfolio \
+    && rm /etc/syslog-ng/syslog-ng.conf /etc/logrotate.conf \
+    && ln -s /etc/syslog-ng/vol/syslog-ng.conf /etc/syslog-ng/syslog-ng.conf \
+    && ln -s /etc/syslog-ng/vol/logrotate.conf /etc/logrotate.conf \
+    && chown -R user:user /etc/syslog-ng /var/lib/syslog-ng /var/log/portfolio /var/lib/logrotate
+USER user

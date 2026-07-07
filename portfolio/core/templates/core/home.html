@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="mb-5">Home</h1>
+
+<h3 class="text-center">About</h3>
+
+<p>
+    Hi, I'm Jonathan!
+</p>
+
+<p>
+    I hold a Master's degree in Computer Science from
+    <a target="_blank" href="https://saarland-informatics-campus.de/">
+       Saarland University</a>.
+
+    On this website, I occasionally write on my
+    <a href="{% url 'blog:index' %}">blog</a>
+    about topics in computer science or projects I'm working on.
+</p>
+
+<p>
+    If you'd like to get in touch, feel free to 
+    <a href="{% url 'core:contact' %}">contact me</a>.
+</p>
+
+<h3 class="text-center mt-5">Projects</h3>
+<p>
+    Some of my projects can be found on
+    <a target="_blank" href="https://github.com/Jonathan2k19">GitHub</a>.
+</p>
+
+{% endblock %}

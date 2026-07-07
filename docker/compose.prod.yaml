@@ -1,0 +1,84 @@
+services:
+  syslog:
+    build:
+      context: ./syslog-ng
+      dockerfile: Dockerfile.syslog-ng.prod
+    container_name: portfolio-syslog-prod
+    volumes:
+      # Volume to live-reload config files
+      - ./syslog-ng/vol/:/etc/syslog-ng/vol/:ro
+      # Volume to read mysql logs
+      - syslog_volume:/var/log/mysql
+
+  mysql:
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile.mysql.prod
+    container_name: portfolio-mysql-prod
+    expose:
+      - ${MYSQL_PORT}
+    user: mysql # run as non-root user
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      # https://stackoverflow.com/questions/76734979/
+      - ./mysql/mysql_init_scripts/prod/:/docker-entrypoint-initdb.d/:ro
+        # Log to volume that is shared with syslog
+      - syslog_volume:/var/log/mysql/
+    depends_on:
+      - syslog
+    healthcheck:
+      # https://stackoverflow.com/questions/42567475/
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "${MYSQL_USER}", "--password=${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 10s
+      retries: 6
+  
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        APP_ROOT: ${APP_ROOT}
+        WWW_ROOT: ${WWW_ROOT}
+        PYTHON_VERSION: ${PYTHON_VERSION}
+    container_name: portfolio-django-prod
+    volumes:
+      - static_volume:${APP_ROOT}/staticfiles
+      - media_volume:${APP_ROOT}/mediafiles
+      # Volume to live-reload Django's content
+      - ${WWW_ROOT_HOST}:${WWW_ROOT}:ro
+    expose:
+      - ${DJANGO_PORT}
+    env_file: .env
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.nginx.prod
+      args:
+        APP_ROOT: ${APP_ROOT}
+        NGINX_VOL_GID_HOST: ${NGINX_VOL_GID_HOST}
+    container_name: portfolio-nginx-prod
+    ports:
+      # 1337/8 in container because non-root user not allowed to access 80/443
+      - 80:1337
+      - 443:1338
+    volumes:
+      - static_volume:${APP_ROOT}/staticfiles
+      - media_volume:${APP_ROOT}/mediafiles
+      # Volume to live-reload config files
+      - ./nginx/vol/:/etc/nginx/vol/:ro
+    depends_on:
+      - django
+
+volumes:
+  static_volume:
+  media_volume:
+  syslog_volume:

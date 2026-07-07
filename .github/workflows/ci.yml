@@ -1,0 +1,28 @@
+name: Django CI
+
+on:
+  push: # to any branch
+  pull_request:
+      branches: [ "main" ]
+
+jobs:
+  run-tests-in-development-setting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Create env variables
+        run: echo "${{ secrets.DEV_ENV_FILE }}" > ./docker/.env.dev
+
+      - name: Setup containers
+        run: make setup-dev
+
+      - name: Print container logs if setup fails
+        if: failure()
+        run: |
+          docker logs portfolio-mysql
+          docker logs portfolio-django
+
+      - name: Run tests
+        run: make test
