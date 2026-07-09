@@ -1,6 +1,6 @@
 # Personal Website
 
-[![Django CI](https://github.com/Jonathan2k19/personal-website/actions/workflows/ci.yml/badge.svg)](https://github.com/Jonathan2k19/personal-website/actions/workflows/ci.yml)
+[![Django CI](https://github.com/JonathanBinkle/personal-website/actions/workflows/ci.yml/badge.svg)](https://github.com/JonathanBinkle/personal-website/actions/workflows/ci.yml)
 
 Source code for [my personal website](https://jonathan.binkle.eu), built with Django. It hosts a small blog (Markdown-based, MySQL-backed) and is containerized with Docker, sitting behind NGINX with TLS.
 
