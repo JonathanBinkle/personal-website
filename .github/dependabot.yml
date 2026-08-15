@@ -5,6 +5,9 @@ updates:
     directory: "/docker"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "Django"
+        update-types: ["version-update:semver-major"] # keep 5.2 LTS
   - package-ecosystem: "docker"
     directory: "/docker"
     schedule:
