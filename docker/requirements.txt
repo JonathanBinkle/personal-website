@@ -1,4 +1,4 @@
-Pygments==2.20
+Pygments==2.21.0
 sqlparse==0.5.5
 packaging==26.3
 mysqlclient==2.2.8
