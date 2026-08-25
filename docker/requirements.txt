@@ -6,4 +6,4 @@ Markdown==3.10.3
 asgiref==3.12.1
 pillow==12.3.0
 Django~=5.2.17
-python-dotenv==1.2.2
+python-dotenv==1.2.3
