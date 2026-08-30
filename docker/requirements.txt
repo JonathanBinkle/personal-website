@@ -1,9 +1,9 @@
-Pygments==2.20
 sqlparse==0.6.0
+Pygments==2.21.0
 packaging==26.3
 mysqlclient==2.2.8
 Markdown==3.10.3
 asgiref==3.12.1
 pillow==12.3.0
 Django~=5.2.17
-python-dotenv==1.2.2
+python-dotenv==1.2.3
