@@ -2,7 +2,7 @@ sqlparse==0.6.0
 Pygments==2.21.0
 packaging==26.3
 mysqlclient==2.3.0
-Markdown==3.10.3
+Markdown==3.11
 asgiref==3.12.1
 pillow==12.3.0
 Django~=5.2.17
