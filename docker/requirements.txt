@@ -5,5 +5,5 @@ mysqlclient==2.3.0
 Markdown==3.11.1
 asgiref==3.12.1
 pillow==13.0.0
-Django~=5.2.18
+Django~=5.2.19
 python-dotenv==1.2.4
